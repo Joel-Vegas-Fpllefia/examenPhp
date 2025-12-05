@@ -402,7 +402,7 @@
                 <li><a href="./habitaciones.php">Habitacions</a></li>
                 <li><a href="./index.php#sobre-nosaltres">Sobre Nosaltres</a></li>
                 <li><a href="./index.php#contacte">Contacte</a></li>
-                <? if($_SESSION['rol'] === 'Administrador'): ?>
+                <? if($_SESSION['rol'] === 'Administrador' && isset($_SESSION['id_user']) ): ?>
                     <li><a href="./admin_panel.php">Admin Panel</a></li>
                 <? endif ?>
             </ul>
