@@ -1,3 +1,12 @@
+<?php
+session_start();
+require_once('./db/config.php');
+if(!isset($_SESSION['id_user'])){
+    header('./no_permisos.php');
+    exit();
+}
+$datos_reservas = $mysqli -> query("SELECT * FROM RESERVES rs JOIN HABITACIONS hb ON rs.id_habitacio = hb.id_habitacio JOIN TIPUS_HABITACIO tph ON hb.id_tipus = tph.id_tipus WHERE rs.id_client = ".$_SESSION['id_user']);
+?>
 <!DOCTYPE html>
 <html lang="ca">
 
@@ -342,29 +351,25 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="nom">Nom</label>
-                            <input type="text" id="nom" name="nom" value="Marc" required>
+                            <input type="text" id="nom" name="nom" value="<?= $_SESSION['nom'] ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="cognom">Cognom</label>
-                            <input type="text" id="cognom" name="cognom" value="Vila" required>
+                            <input type="text" id="cognom" name="cognom" value="<?= $_SESSION['cognoms'] ?>" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Correu electrònic</label>
-                        <input type="email" id="email" name="email" value="marc.vila@exemple.com" required>
+                        <input type="email" id="email" name="email" value="<?= $_SESSION['email'] ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="foto_perfil_url">URL de la Foto de Perfil</label>
-                        <input type="url" id="foto_perfil_url" name="foto_perfil_url" value="https://via.placeholder.com/150/0066cc/ffffff?text=MV">
+                        <input type="url" id="foto_perfil_url" name="foto_perfil_url" value="<?= $_SESSION['foto_perfil'] ?>">
                     </div>
 
-                    <div class="form-group">
-                        <label for="datanaixement">Data de naixement</label>
-                        <input type="date" id="datanaixement" name="datanaixement" value="1990-05-20" required>
-                    </div>
-
+                    
                     <button type="submit" class="btn-guardar">💾 Guardar Canvis</button>
                 </form>
             </div>
@@ -375,25 +380,16 @@
                 <h2>Historial de Reserves</h2>
 
                 <div class="reserva-card">
-                    <div class="reserva-title">Suite Mediterrània (Ref: BW-3054)</div>
-                    <div class="reserva-info"><strong>Data Entrada:</strong> 15/12/2024</div>
-                    <div class="reserva-info"><strong>Data Sortida:</strong> 20/12/2024</div>
-                    <div class="reserva-info"><strong>Habitació:</strong> Suite Premium</div>
-                    <div class="reserva-info"><strong>Preu Total:</strong> 850€</div>
+                    <? foreach($datos_reservas as $reserva): ?>
+                        <div class="reserva-title">Suite Mediterrània (Ref: BW-3054)</div>
+                        <div class="reserva-info"><strong>Data Entrada:</strong> <?= $reserva['data_entrada'] ?></div>
+                        <div class="reserva-info"><strong>Data Sortida:</strong> <?= $reserva['data_sortida'] ?></div>
+                        <div class="reserva-info"><strong>Habitació:</strong> <?= $reserva['nom_tipus'] ?></div>
+                        <div class="reserva-info"><strong>Preu Total:</strong> <?= $reserva['preu_total'] ?></div>
+                    <? endforeach ?>
 
                 </div>
 
-                <div class="reserva-card">
-                    <div class="reserva-title">Doble Estàndard (Ref: BW-1002)</div>
-                    <div class="reserva-info"><strong>Data Entrada:</strong> 01/08/2024</div>
-                    <div class="reserva-info"><strong>Data Sortida:</strong> 05/08/2024</div>
-                    <div class="reserva-info"><strong>Habitació:</strong> Doble Vista Piscina</div>
-                    <div class="reserva-info"><strong>Preu Total:</strong> 420€</div>
-                    <div class="reserva-actions">
-                        <a href="#" class="btn-detall">Veure Detalls</a>
-                        <span class="btn-cancelar" style="background: #94a3b8; cursor: not-allowed;">Finalitzada</span>
-                    </div>
-                </div>
 
             </div>
         </div>
